@@ -6,5 +6,6 @@ class Data(
     val names: Map<String, String>,
     val colors: Map<String, String>,
     val percentage: Boolean,
-    val stacked: Boolean
+    val stacked: Boolean,
+    val yScaled: Boolean
 )

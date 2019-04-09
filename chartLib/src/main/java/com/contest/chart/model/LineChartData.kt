@@ -5,4 +5,5 @@ class LineChartData {
     lateinit var timeLine: LongArray
     var percentage: Boolean = false
     var stacked: Boolean = false
+    var yScaled: Boolean = false
 }

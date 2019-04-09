@@ -47,6 +47,7 @@ class LineChartDataMapper : Mapper<Data, LineChartData> {
         val lineChart = LineChartData().apply {
             percentage = inputData.percentage
             stacked = inputData.stacked
+            yScaled = inputData.yScaled
         }
 
         mutableColumns.forEach { list ->
