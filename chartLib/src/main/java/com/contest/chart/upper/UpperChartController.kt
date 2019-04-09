@@ -38,7 +38,11 @@ class UpperChartController(
     }
 
     override fun onCreateLinePainter(line: BrokenLine): UpperChatLinePrinter {
-        return UpperChatLinePrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS)
+        return if (chartData.stacked) {
+            StackedUpperChatPrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS, view)
+        } else {
+            UpperChatLinePrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS)
+        }
     }
 
     private fun notifyFocusRangeChanged() {

@@ -10,15 +10,15 @@ class DataController : DataProvider {
     private lateinit var detailsProvider: ChartDetailsProvider
 
     override fun getInterceptions(x: Float): InterceptionInfo {
-        if (x == 0f) return InterceptionInfo(-1)
+        if (x == 0f) return InterceptionInfo()
 
         val positionOffset = detailsProvider.getPositionOffset()
         val height = detailsProvider.getTotalHeight()
         val step = detailsProvider.getChartStep()
 
-        val info = InterceptionInfo(chartdata.id)
+        val info = InterceptionInfo()
         val posInArray = getStartPositionInArray(x, step, positionOffset) + 1
-        if (posInArray >= chartdata.timeLine.size || posInArray < 0) return InterceptionInfo(-1)
+        if (posInArray >= chartdata.timeLine.size || posInArray < 0) return InterceptionInfo()
         info.timeLabel = chartdata.timeLine[posInArray]
 
         chartdata.brokenLines.forEach {

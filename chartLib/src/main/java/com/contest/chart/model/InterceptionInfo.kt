@@ -2,7 +2,7 @@ package com.contest.chart.model
 
 import android.graphics.PointF
 
-class InterceptionInfo(val id: Int) {
+class InterceptionInfo() {
 
     val details = ArrayList<Data>()
     var timeLabel = 1L

@@ -7,12 +7,13 @@ import org.json.JSONObject
 
 class DataProvider {
 
-    private val fileName = "chart_data.json"
+    private val stage1Data = "chart_data.json"
+    private val stage2Chart5 = "contest/5/overview.json"
 
     fun getData(context: Context, callBack: CallBack) {
         try {
             val chartsDataList = ArrayList<Data>()
-            val content = context.assets.open(fileName).bufferedReader().use { it.readText() }
+            val content = context.assets.open(stage1Data).bufferedReader().use { it.readText() }
             val jsonArray = JSONArray(content)
 
             for (index in 0 until jsonArray.length()) {
@@ -23,10 +24,32 @@ class DataProvider {
                 val rawColors = rawChart.get("colors") as JSONObject
                 chartsDataList.add(createData(rawColumns, rawTypes, rawNames, rawColors))
             }
-            val mapper = LineChartDataMapper()
+            val mapper = ListLineChartDataMapper()
             val chartData = mapper.apply(chartsDataList)
 
             callBack.onSuccess(chartData)
+        } catch (ex: java.lang.Exception) {
+            callBack.onError(ex)
+        }
+    }
+
+    fun getDataStage2(context: Context, callBack: CallBack) {
+        try {
+            val content = context.assets.open(stage2Chart5).bufferedReader().use { it.readText() }
+            val rawChart = JSONObject(content)
+
+            val rawColumns = rawChart.get("columns") as JSONArray
+            val rawTypes = rawChart.get("types") as JSONObject
+            val rawNames = rawChart.get("names") as JSONObject
+            val rawColors = rawChart.get("colors") as JSONObject
+            val percentage = rawChart.get("percentage") as Boolean
+            val stacked = rawChart.get("stacked") as Boolean
+
+            val data = createData(rawColumns, rawTypes, rawNames, rawColors, percentage, stacked)
+
+            val chart = LineChartDataMapper().apply(data)
+
+            callBack.onSuccess(listOf(chart))
         } catch (ex: java.lang.Exception) {
             callBack.onError(ex)
         }
@@ -36,7 +59,9 @@ class DataProvider {
         rawColumns: JSONArray,
         rawTypes: JSONObject,
         rawNames: JSONObject,
-        rawColors: JSONObject
+        rawColors: JSONObject,
+        percentage: Boolean = false,
+        stacked: Boolean = false
     ): Data {
 
         val names = toStringStringMap(rawNames)
@@ -44,7 +69,7 @@ class DataProvider {
         val colors = toStringStringMap(rawColors)
         val columns = toListOfListOfAny(rawColumns)
 
-        return Data(columns, types, names, colors)
+        return Data(columns, types, names, colors, percentage, stacked)
     }
 
     private fun toListOfListOfAny(jsonArray: JSONArray): List<List<Any>> {

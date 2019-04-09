@@ -4,7 +4,7 @@ import com.contest.chart.model.BrokenLine
 import com.contest.chart.model.LineChartData
 import java.lang.IllegalArgumentException
 
-class LineChartDataMapper : Mapper<List<Data>, List<LineChartData>> {
+class ListLineChartDataMapper : Mapper<List<Data>, List<LineChartData>> {
     override fun apply(inputData: List<Data>): List<LineChartData> {
         val outputDataList = ArrayList<LineChartData>()
 
@@ -12,7 +12,7 @@ class LineChartDataMapper : Mapper<List<Data>, List<LineChartData>> {
 
             val mutableColumns = data.columns.toMutableList()
 
-            val lineChart = LineChartData(index)
+            val lineChart = LineChartData()
 
             mutableColumns.forEach { list ->
                 val mutableColumn = list.toMutableList()
@@ -35,6 +35,36 @@ class LineChartDataMapper : Mapper<List<Data>, List<LineChartData>> {
         if (outputDataList.isEmpty()) throw IllegalArgumentException("Data is Empty")
 
         return outputDataList
+    }
+}
+
+
+class LineChartDataMapper : Mapper<Data, LineChartData> {
+    override fun apply(inputData: Data): LineChartData {
+
+        val mutableColumns = inputData.columns.toMutableList()
+
+        val lineChart = LineChartData().apply {
+            percentage = inputData.percentage
+            stacked = inputData.stacked
+        }
+
+        mutableColumns.forEach { list ->
+            val mutableColumn = list.toMutableList()
+            val id = mutableColumn[0].toString()
+            mutableColumn.removeAt(0)
+
+            if (id == "x") {
+                lineChart.timeLine = mutableColumn.toLongArr()
+            } else {
+                val points = mutableColumn.toFloatArr()
+                val colorCode = inputData.colors[id]
+                val line = BrokenLine(points, inputData.names.getValue(id), colorCode!!)
+                lineChart.brokenLines.add(line)
+            }
+        }
+
+        return lineChart
     }
 }
 

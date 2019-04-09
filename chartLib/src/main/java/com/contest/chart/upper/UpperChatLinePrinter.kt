@@ -7,14 +7,14 @@ import com.contest.chart.base.DetalsProvider
 import com.contest.chart.model.BrokenLine
 import com.contest.chart.utils.Constants
 
-class UpperChatLinePrinter(
+open class UpperChatLinePrinter(
     line: BrokenLine,
     provider: DetalsProvider,
     thickness: Float
 ) : BaseLinePrinter(line, thickness, provider) {
 
-    private var positionOffset = 0
-    private val path = Path()
+    protected var positionOffset = 0
+    protected val path = Path()
 
     override fun draw(canvas: Canvas, xStep: Float, yStep: Float) {
         if (!line.isEnabled) return

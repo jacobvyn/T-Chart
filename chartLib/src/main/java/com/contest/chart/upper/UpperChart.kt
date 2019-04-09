@@ -41,8 +41,8 @@ class UpperChart : AbstractLineChart<UpperChartController>, ChartDetailsProvider
     }
 
     override fun onDraw(canvas: Canvas) {
-        scale.draw(canvas)
         super.onDraw(canvas)
+        scale.draw(canvas)
     }
 
     override fun getChartStep(): Step {

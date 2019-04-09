@@ -13,7 +13,11 @@ class BottomChartController(chartData: LineChartData, chartView: ChartView) :
     AbstractChartController<LinePrinter>(chartData, chartView) {
 
     override fun onCreateLinePainter(line: BrokenLine): LinePrinter {
-        return LinePrinter(line, this, Constants.BOTTOM_CHART_LINE_THICKNESS)
+        return if (chartData.stacked) {
+            StackedBottomPrinter(line, this, Constants.BOTTOM_CHART_LINE_THICKNESS, view)
+        } else {
+            LinePrinter(line, this, Constants.BOTTOM_CHART_LINE_THICKNESS)
+        }
     }
 
     override fun getMaxValue(): Float {
