@@ -7,10 +7,12 @@ import org.json.JSONObject
 
 class DataProvider {
 
-    private val stage1Data = "chart_data.json"
-    private val stage2Chart2 = "contest/2/overview.json"
-    private val stage2Chart3 = "contest/3/overview.json"
-    private val stage2Chart5 = "contest/5/overview.json"
+    companion object {
+        const val stage1Data = "chart_data.json"
+        const val stage2Chart2 = "contest/2/overview.json"
+        const val stage2Chart3 = "contest/3/overview.json"
+        const val stage2Chart5 = "contest/5/overview.json"
+    }
 
     fun getData(context: Context, callBack: CallBack) {
         try {
@@ -37,25 +39,33 @@ class DataProvider {
 
     fun getDataStage2(context: Context, callBack: CallBack) {
         try {
-            val content = context.assets.open(stage2Chart3).bufferedReader().use { it.readText() }
-            val rawChart = JSONObject(content)
 
-            val rawColumns = rawChart.get("columns") as JSONArray
-            val rawTypes = rawChart.get("types") as JSONObject
-            val rawNames = rawChart.get("names") as JSONObject
-            val rawColors = rawChart.get("colors") as JSONObject
-            val percentage = getBoolean(rawChart, "percentage")
-            val stacked = getBoolean(rawChart, "stacked")
-            val yScaled = getBoolean(rawChart, "y_scaled")
+            val chart2 = getChart(context, stage2Chart2)
+            val chart3 = getChart(context, stage2Chart3)
+            val chart5 = getChart(context, stage2Chart5)
 
-            val data = createData(rawColumns, rawTypes, rawNames, rawColors, percentage, stacked, yScaled)
-
-            val chart = LineChartDataMapper().apply(data)
-
-            callBack.onSuccess(listOf(chart))
+            callBack.onSuccess(listOf(chart2, chart3, chart5))
         } catch (ex: java.lang.Exception) {
             callBack.onError(ex)
         }
+    }
+
+    private fun getChart(context: Context, fileName: String): LineChartData {
+        val content = context.assets.open(fileName).bufferedReader().use { it.readText() }
+        val rawChart = JSONObject(content)
+
+        val rawColumns = rawChart.get("columns") as JSONArray
+        val rawTypes = rawChart.get("types") as JSONObject
+        val rawNames = rawChart.get("names") as JSONObject
+        val rawColors = rawChart.get("colors") as JSONObject
+        val percentage = getBoolean(rawChart, "percentage")
+        val stacked = getBoolean(rawChart, "stacked")
+        val yScaled = getBoolean(rawChart, "y_scaled")
+
+        val data =
+            createData(rawColumns, rawTypes, rawNames, rawColors, percentage, stacked, yScaled)
+
+        return LineChartDataMapper().apply(data)
     }
 
     private fun getBoolean(obj: JSONObject, name: String): Boolean {

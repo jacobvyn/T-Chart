@@ -1,18 +1,18 @@
-package com.contest.chart.bottom
+package com.contest.chart.upper
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import com.contest.chart.base.ChartView
 import com.contest.chart.base.DetalsProvider
-import com.contest.chart.base.LinePrinter
 import com.contest.chart.model.BrokenLine
+import com.contest.chart.utils.Constants
 
-open class StackedBottomPrinter(
+class StackedAreaUpperPrinter(
     line: BrokenLine,
     provider: DetalsProvider,
     thickness: Float,
     val view: ChartView
-) : LinePrinter(line, provider, thickness) {
+) : UpperChatLinePrinter(line, provider, thickness) {
 
     init {
         paint.style = Paint.Style.FILL_AND_STROKE
@@ -24,14 +24,21 @@ open class StackedBottomPrinter(
         path.reset()
         path.moveTo(0f, view.getChartHeight().toFloat())
 
-        val size = line.points.size - 1
-        for (positionX in 0 until size) {
+        val range = provider.getFocusedRange()
 
-            val x1 = positionX * xStep
+        for (positionX in range) {
+            val x1 = (positionX - positionOffset) * xStep
             val originY1 = line.points[positionX]
-            val y1 = getStartY() - originY1 * yStep
-            path.lineTo(x1,y1)
+            val y1 = getStartY() - originY1 * yStep - Constants.BOTTOM_VERTICAL_OFFSET
+
+            path.lineTo(x1, y1)
         }
+
+        val lastX = (range.last + 1 - positionOffset) * xStep
+        val lastOriginY1 = line.points[range.last + 1]
+        val lastY = getStartY() - lastOriginY1 * yStep - Constants.BOTTOM_VERTICAL_OFFSET
+
+        path.lineTo(lastX, lastY)
         path.lineTo(view.getChartWidth().toFloat(), view.getChartHeight().toFloat())
         canvas.drawPath(path, paint)
     }

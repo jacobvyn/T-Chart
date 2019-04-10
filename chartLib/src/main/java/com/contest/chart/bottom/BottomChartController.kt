@@ -14,7 +14,7 @@ class BottomChartController(chartData: LineChartData, chartView: ChartView) :
 
     override fun onCreateLinePainter(line: BrokenLine): LinePrinter {
         return if (chartData.stacked) {
-            StackedBottomPrinter(line, this, Constants.BOTTOM_CHART_LINE_THICKNESS, view)
+            StackedAreaBottomPrinter(line, this, Constants.BOTTOM_CHART_LINE_THICKNESS, view)
         } else {
             LinePrinter(line, this, Constants.BOTTOM_CHART_LINE_THICKNESS)
         }

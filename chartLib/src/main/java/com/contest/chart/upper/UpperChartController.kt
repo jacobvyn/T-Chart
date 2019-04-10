@@ -7,6 +7,7 @@ import com.contest.chart.base.BaseListener
 import com.contest.chart.base.ChartView
 import com.contest.chart.model.BrokenLine
 import com.contest.chart.model.LineChartData
+import com.contest.chart.model.Type
 import com.contest.chart.utils.Constants
 import com.contest.chart.utils.animateValue
 import com.contest.chart.utils.getChartMaxSize
@@ -38,10 +39,10 @@ class UpperChartController(
     }
 
     override fun onCreateLinePainter(line: BrokenLine): UpperChatLinePrinter {
-        return if (chartData.stacked) {
-            StackedUpperChatPrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS, view)
-        } else {
-            UpperChatLinePrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS)
+        return when {
+            chartData.isOfType(Type.AREA) -> StackedAreaUpperPrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS, view)
+            chartData.isOfType(Type.BAR) -> StackedBarUpperPrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS, view)
+            else -> UpperChatLinePrinter(line, this, Constants.UPPER_CHART_LINE_THICKNESS)
         }
     }
 

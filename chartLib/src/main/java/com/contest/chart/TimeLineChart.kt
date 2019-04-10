@@ -60,7 +60,6 @@ class TimeLineChart : FrameLayout, CompoundButton.OnCheckedChangeListener {
     }
 
     fun setData(chartData: LineChartData) {
-        chartData.brokenLines.forEach { it.isEnabled = true }
         dataController.setData(chartData)
         bottomChart.setData(chartData)
         upperChart.setData(chartData)

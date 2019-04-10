@@ -7,7 +7,7 @@ import com.contest.chart.base.DetalsProvider
 import com.contest.chart.model.BrokenLine
 import com.contest.chart.utils.Constants
 
-class StackedUpperChatPrinter(
+class StackedBarUpperPrinter(
     line: BrokenLine,
     provider: DetalsProvider,
     thickness: Float,
@@ -28,10 +28,13 @@ class StackedUpperChatPrinter(
 
         for (positionX in range) {
             val x1 = (positionX - positionOffset) * xStep
+            val x2 = (positionX + 1 - positionOffset) * xStep
+
             val originY1 = line.points[positionX]
             val y1 = getStartY() - originY1 * yStep - Constants.BOTTOM_VERTICAL_OFFSET
 
             path.lineTo(x1, y1)
+            path.lineTo(x2, y1)
         }
 
         val lastX = (range.last + 1 - positionOffset) * xStep
